@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Resource;
+use Illuminate\Support\Facades\Auth;
 
 class ResourceController extends Controller
 {
@@ -44,7 +45,7 @@ class ResourceController extends Controller
 
         // Store the uploaded image
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public'); // Store image in the 'public' disk under 'images' directory
+            $imagePath = $request->file('image')->store('images2', 'public'); // Store image in the 'public' disk under 'images2' directory
         }
 
         // Create a new resource
@@ -93,6 +94,15 @@ class ResourceController extends Controller
         $resource->delete();
 
         return response()->json(['message' => 'Resource deleted successfully']);
+    }
+
+    
+    public function getResourcesByUser($user_id)
+    {
+        // Fetch all resources belonging to the specified user
+        $resources = Resource::where('user_id', $user_id)->get();
+
+        return response()->json(['resources' => $resources]);
     }
 }
 

@@ -34,6 +34,14 @@ class CustomResourceRequestController extends Controller
         // Return a JSON response with the created resource request
         return response()->json(['message' => 'Resource request submitted successfully', 'request' => $customResourceRequest]);
     }
+    public function index()
+    {
+        // Retrieve all custom resource requests
+        $customResourceRequests = CustomResourceRequest::all();
+
+        // Return a JSON response with the list of custom resource requests
+        return response()->json(['customResourceRequests' => $customResourceRequests]);
+    }
 }
 
 

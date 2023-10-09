@@ -18,7 +18,7 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/user', [AuthController::class, 'user']);
 
 // Resource Routes with User ID
-Route::get('/user/{user_id}/resource', [ResourceController::class, 'index']); // Updated route
+Route::get('/resource', [ResourceController::class, 'index']); // Updated route
 Route::get('/user/{user_id}/resource/{id}', [ResourceController::class, 'show']); // Updated route
 Route::post('/user/{user_id}/resource', [ResourceController::class, 'store']); // Updated route
 Route::put('/user/{user_id}/resource/{id}', [ResourceController::class, 'update']); // Updated route
@@ -30,6 +30,10 @@ Route::get('/custom-resource-request/{id}', [CustomResourceRequestController::cl
 Route::put('/custom-resource-request/{id}', [CustomResourceRequestController::class, 'update']);
 Route::delete('/custom-resource-request/{id}', [CustomResourceRequestController::class, 'destroy']);
 
+Route::resource('custom-resource-requests', CustomResourceRequestController::class)->only(['index']);
+
+Route::get('/user/{user_id}/resources', [ResourceController::class, 'getResourcesByUser']);
+
 
 // Profile Routes
 Route::get('/profile/{username}', [ProfileController::class, 'show']);
@@ -37,10 +41,30 @@ Route::put('/profile/{username}', [ProfileController::class, 'updateProfile'])->
 
 
 // Search Routes (if applicable)
-Route::get('/search', [SearchController::class, 'index']);
+Route::get('/search', [SearchController::class, 'search']);
 
 // Upload Routes (if applicable)
 Route::post('/upload', [UploadController::class, 'store']);
+
+use Illuminate\Support\Facades\Storage;
+
+// Add this route to api.php
+Route::get('/images2/{filename}', function ($filename) {
+    // Use Laravel's Storage facade to retrieve the image file
+    $path = 'public/images2/' . $filename;
+
+    if (Storage::exists($path)) {
+        $file = Storage::get($path);
+        $mimeType = Storage::mimeType($path);
+
+        return response($file)
+            ->header('Content-Type', $mimeType);
+    } else {
+        // Handle the case where the image does not exist
+        return response('Image not found', 404);
+    }
+});
+
 
 
 
