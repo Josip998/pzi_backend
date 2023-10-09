@@ -22,8 +22,8 @@ Route::get('/resources/{id}', [ResourceController::class, 'showid']);
 
 
 
-
-Route::get('resources/sellers/{resourceId}', [ResourceController::class, 'showSeller']);
+//Route for getting Seller informations
+Route::get('resources/sellers/{SellerId}', [ResourceController::class, 'showSeller']);
 
 
 // Resource Routes with User ID

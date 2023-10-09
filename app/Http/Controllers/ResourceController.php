@@ -118,10 +118,10 @@ class ResourceController extends Controller
 
 
 
-    public function showSeller($resourceId)
+    public function showSeller($SellerId)
     {
         // Find the resource by its ID
-        $seller = User::find($resourceId);
+        $seller = User::find($SellerId);
     
         if (!$seller) {
             return response()->json(['message' => 'Seller not found'], 404);
