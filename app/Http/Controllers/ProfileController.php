@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -58,6 +59,25 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Profile updated successfully']);
+    }
+
+
+
+
+
+
+        public function getUserRole()
+    {
+        // Check if the user is authenticated
+        if (Auth::check()) {
+            // Get the authenticated user's role
+            $userRole = Auth::user()->role; // Assuming 'role' is the field name for the user's role
+
+            return response()->json(['role' => $userRole]);
+        }
+
+        // Return an error response if the user is not authenticated
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 }
 

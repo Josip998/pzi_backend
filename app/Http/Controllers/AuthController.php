@@ -19,6 +19,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'location' => 'required', // Add validation for location
+            'role' => 'user', // Default role for regular users
         ]);
 
         // Create a new user

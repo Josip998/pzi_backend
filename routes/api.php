@@ -15,14 +15,27 @@ use App\Http\Controllers\CustomResourceRequestController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
-Route::get('/user', [AuthController::class, 'user']);
+Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
+
+
+Route::get('/resources/{id}', [ResourceController::class, 'showid']);
+
+
+
+
+Route::get('resources/sellers/{resourceId}', [ResourceController::class, 'showSeller']);
+
 
 // Resource Routes with User ID
-Route::get('/resource', [ResourceController::class, 'index']); // Updated route
-Route::get('/user/{user_id}/resource/{id}', [ResourceController::class, 'show']); // Updated route
-Route::post('/user/{user_id}/resource', [ResourceController::class, 'store']); // Updated route
-Route::put('/user/{user_id}/resource/{id}', [ResourceController::class, 'update']); // Updated route
-Route::delete('/user/{user_id}/resource/{id}', [ResourceController::class, 'destroy']); // Updated route
+Route::get('/resource', [ResourceController::class, 'index']); 
+Route::get('/user/{user_id}/resource/{id}', [ResourceController::class, 'show'])->middleware('auth:sanctum'); 
+Route::post('/user/{user_id}/resource', [ResourceController::class, 'store']); 
+Route::put('/user/{user_id}/resource/{id}', [ResourceController::class, 'update'])->middleware('auth:sanctum'); 
+Route::delete('/user/{user_id}/resource/{id}', [ResourceController::class, 'destroy'])->middleware('auth:sanctum');
+
+Route::resource('resources', ResourceController::class)->middleware('auth:sanctum'); 
+
+Route::get('/user/role', [ProfileController::class, 'getUserRole'])->middleware('auth:sanctum');
 
 // Custom Resource Request Routes
 Route::post('/custom-resource-request', [CustomResourceRequestController::class, 'store']);

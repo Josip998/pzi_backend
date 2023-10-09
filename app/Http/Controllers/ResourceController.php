@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Resource;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class ResourceController extends Controller
 {
@@ -21,7 +22,9 @@ class ResourceController extends Controller
     public function show($id)
     {
         // Find the resource by ID
-        $resource = Resource::find($id);
+        $resource = Resource::with('user')->find($id);
+
+
 
         if (!$resource) {
             return response()->json(['message' => 'Resource not found'], 404);
@@ -62,34 +65,29 @@ class ResourceController extends Controller
         return response()->json(['message' => 'Resource created successfully', 'resource' => $resource], 201);
     }
 
-    // Update an existing resource by ID
-    public function update(Request $request, $id)
+    public function update(Request $request, Resource $resource)
     {
-        // Find the resource by ID
-        $resource = Resource::find($id);
-
-        if (!$resource) {
-            return response()->json(['message' => 'Resource not found'], 404);
-        }
-
-        // Validate request data here if needed
+        // Validate the request data, you can customize the validation rules
+        $request->validate([
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'size' => 'required|string',
+        ]);
 
         // Update the resource
-        $resource->update($request->all());
+        $resource->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price'),
+            'size' => $request->input('size'),
+        ]);
 
         return response()->json(['message' => 'Resource updated successfully', 'resource' => $resource]);
     }
 
-    // Delete a resource by ID
-    public function destroy($id)
+    public function destroy(Resource $resource)
     {
-        // Find the resource by ID
-        $resource = Resource::find($id);
-
-        if (!$resource) {
-            return response()->json(['message' => 'Resource not found'], 404);
-        }
-
         // Delete the resource
         $resource->delete();
 
@@ -104,6 +102,41 @@ class ResourceController extends Controller
 
         return response()->json(['resources' => $resources]);
     }
+
+    public function showid($id)
+    {
+        try {
+            $resource = Resource::findOrFail($id);
+            $resource->user;
+            // Replace 'Resource' with your actual model name
+            return response()->json($resource, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Resource not found'], 404);
+        }
+    }
+
+
+
+
+    public function showSeller($resourceId)
+    {
+        // Find the resource by its ID
+        $seller = User::find($resourceId);
+    
+        if (!$seller) {
+            return response()->json(['message' => 'Seller not found'], 404);
+        }
+    
+        // You can customize the response data as needed
+        $sellerInfo = [
+            'user_id' => $seller->id,
+            'email' => $seller->email,
+            'location' => $seller->location, // Add any other user-related information you need
+        ];
+    
+        return response()->json($sellerInfo);
+    }
+    
 }
 
 
